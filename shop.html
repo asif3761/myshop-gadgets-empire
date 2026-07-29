@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shop — NEXA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="pageTransition"><div class="pt-brand"><span class="pt-dot"></span>NEXA</div></div>
+<div id="cursor-glow"></div>
+
+<header>
+  <div class="nav">
+    <div class="logo"><span class="name">NEXA</span><span class="dot"></span></div>
+    <nav class="links">
+      <a href="index.html">Home</a>
+      <a href="shop.html" class="active">Shop</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="nav-right">
+      <button id="cartToggle" class="cart-toggle magnetic" aria-haspopup="true" aria-expanded="false" aria-controls="cartDrawer" aria-label="Open cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#F5F5F0" stroke-width="1.8"><path d="M3 4h2l2.4 12.2a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.6L21 7H6"/><circle cx="9.5" cy="20.5" r="1.4" fill="#F5F5F0" stroke="none"/><circle cx="17.5" cy="20.5" r="1.4" fill="#F5F5F0" stroke="none"/></svg>
+        <span id="cartCount" class="cart-count">0</span>
+      </button>
+      <a class="btn btn-solid magnetic" href="contact.html">Order Now</a>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="index.html">Home</a><span>/</span><span>Shop</span></div>
+    <h1 class="reveal">The Shelf</h1>
+    <p style="color:var(--text-dim); margin-top:10px; max-width:520px;" class="reveal">Pick a storage variant, add to cart, and checkout with everything in one message.</p>
+  </div>
+</section>
+
+<section id="shop">
+  <div class="wrap">
+    <div class="shelf-rail reveal">
+      <button class="chip active" data-filter="all">All</button>
+      <button class="chip" data-filter="phones">Mobile Phones</button>
+      <button class="chip" data-filter="power">Apple Chargers</button>
+      <button class="chip" data-filter="audio">Audio</button>
+      <button class="chip" data-filter="wearables">Wearables</button>
+      <button class="chip" data-filter="accessories">Accessories</button>
+    </div>
+    <div class="grid" id="productGrid"></div>
+    <p style="margin-top:22px; font-size:12.5px; color:var(--text-dim);" class="reveal mono">* Used iPhone prices are competitive estimates based on comparing Bikroy, Nexthand, and Mobile.com.bd listings (Jul 2026) — confirm exact condition before listing your own stock. Apple charger prices are sourced from Bangladeshi Apple resellers. Variants marked <b>TBA</b> have no price set yet — tap to message us for a quote.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="logo"><span class="name">NEXA</span><span class="dot"></span></div>
+        <p style="color:var(--text-dim); font-size:14px; margin-top:12px; max-width:300px;">Verified used iPhones and genuine Apple chargers, ordered the simple way. Dhaka, Bangladesh.</p>
+      </div>
+      <div><h4>Shop</h4><ul><li><a href="shop.html">All products</a></li><li><a href="index.html#order">How to order</a></li><li><a href="index.html#trust">Payment info</a></li></ul></div>
+      <div><h4>Reach us</h4><ul>
+        <li><a href="https://wa.me/8801951467502" target="_blank" rel="noopener">WhatsApp: +880 1951-467502</a></li>
+        <li><a href="mailto:asifuzzaman3761@gmail.com">asifuzzaman3761@gmail.com</a></li>
+        <li><a href="contact.html">Facebook Page</a></li>
+      </ul></div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 NEXA — Used iPhones &amp; Apple Chargers</span><span>Hosted on GitHub Pages</span></div>
+  </div>
+</footer>
+
+<div id="cartOverlay" class="cart-overlay"></div>
+<aside id="cartDrawer" class="cart-drawer" aria-hidden="true">
+  <div class="cart-drawer-head"><h3>Your Cart</h3><button id="cartClose" class="cart-close" aria-label="Close cart">&times;</button></div>
+  <div id="cartItems" class="cart-items"><p class="cart-empty">Your cart is empty. Add something from the shelf.</p></div>
+  <div class="cart-footer">
+    <div class="cart-subtotal"><span>Subtotal</span><span id="cartSubtotal" class="mono">৳0</span></div>
+    <a id="checkoutWhatsapp" class="btn btn-solid magnetic" style="width:100%; margin-bottom:10px;" target="_blank" rel="noopener">Checkout via WhatsApp</a>
+    <button id="checkoutFacebook" class="btn btn-outline" style="width:100%;">Copy Order for Facebook</button>
+    <p class="cart-note">Checkout opens WhatsApp with your order pre-written. Nothing is charged automatically.</p>
+  </div>
+</aside>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+<script>
+  function pageInit(){
+    var grid = document.getElementById('productGrid');
+    PRODUCTS.forEach(function(p){ grid.appendChild(buildProductCard(p)); });
+
+    var chips = document.querySelectorAll('.chip');
+    function applyFilter(f){
+      document.querySelectorAll('#productGrid .card').forEach(function(card){
+        card.style.display = (f === 'all' || card.dataset.cat === f) ? '' : 'none';
+      });
+    }
+    chips.forEach(function(chip){
+      chip.addEventListener('click', function(){
+        chips.forEach(function(c){ c.classList.remove('active'); });
+        chip.classList.add('active');
+        applyFilter(chip.dataset.filter);
+      });
+    });
+
+    var params = new URLSearchParams(window.location.search);
+    var cat = params.get('cat');
+    if(cat){
+      var target = document.querySelector('.chip[data-filter="' + cat + '"]');
+      if(target){ target.click(); }
+    }
+  }
+</script>
+</body>
+</html>
